@@ -1,23 +1,19 @@
 # GAMS
 
-A Next.js project.
+A Next.js Gams project.
 
 ---
 
 ## Getting Started
 
-First, install dependencies and run the development server:
+First, Install dependencies:
 
 ```bash
 npm install
+```
+
+Run the development server By Using this Command:
+
+```bash
 npm run dev
-# or
-yarn
-yarn dev
-# or
-pnpm install
-pnpm dev
-# or
-bun install
-bun dev
 ```

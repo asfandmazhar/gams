@@ -4,6 +4,7 @@ import { usePathname } from "next/navigation";
 import ClientLayoutWrapper from "./ClientLayoutWrapper";
 import localFont from "next/font/local";
 import "./globals.css";
+import { Toaster } from "react-hot-toast";
 
 const bricolage = localFont({
   src: [
@@ -49,7 +50,7 @@ const poppins = localFont({
 
 export default function RootLayout({ children }) {
   const pathname = usePathname?.();
-  
+
   const isAdminPage = pathname?.startsWith("/admin");
   const isLoadingPage = pathname?.includes("/loading");
 
@@ -61,6 +62,8 @@ export default function RootLayout({ children }) {
           isAdminPage ? "admin-layout" : "website-layout"
         }`}
       >
+        <Toaster position="top-center" reverseOrder={false} />
+
         {isAdminPage || isLoadingPage ? (
           children
         ) : (

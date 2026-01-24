@@ -7,7 +7,7 @@ import {
   World,
   Order,
   Cross,
-  Logout
+  Logout,
 } from "@/components/icons/icons";
 import Button from "../button/Button";
 
@@ -33,9 +33,7 @@ export default function MobileMenu({ onLanguageClick, onClose }) {
         <p className="!text-sm">
           Don’t have an account?
           <span className="text-[var(--error-color)] cursor-pointer ml-1">
-            <Link href={"/auth/login"}>
-              Sign up
-            </Link>
+            <Link href={"/auth/login"}>Sign up</Link>
           </span>
         </p>
       </div>
@@ -69,7 +67,7 @@ export default function MobileMenu({ onLanguageClick, onClose }) {
       </ul>
       <div>
         <Link href={"/subscription"} onClick={onClose}>
-          <li className="Profile-li-link">
+          <li className="flex gap-3 px-4 py-3 hover:bg-red-400 bg-red-500 text-white">
             <Logout className={"w-5 h-5"} />
             Log out
           </li>

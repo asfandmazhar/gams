@@ -7,7 +7,12 @@ import { usePathname } from "next/navigation";
 export default function ClientLayoutWrapper({ children }) {
   const pathname = usePathname();
 
-  const hideLayout = ["/search", "/auth/login", "/admin"].includes(pathname);
+  const hideLayout = [
+    "/search",
+    "/auth/login",
+    "/auth/register",
+    "/admin",
+  ].includes(pathname);
 
   return (
     <>

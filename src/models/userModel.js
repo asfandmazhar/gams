@@ -1,6 +1,10 @@
 import mongoose from "mongoose";
 
 const userSchema = new mongoose.Schema({
+  fullName: {
+    type: String,
+    required: [true, "Please Provide Your Full Name"],
+  },
   username: {
     type: String,
     required: [true, "Please Provide Username"],
@@ -14,10 +18,6 @@ const userSchema = new mongoose.Schema({
   password: {
     type: String,
     required: [true, "Please Provide Password"],
-  },
-  isVerified: {
-    type: Boolean,
-    default: false,
   },
   isAdmin: {
     type: Boolean,

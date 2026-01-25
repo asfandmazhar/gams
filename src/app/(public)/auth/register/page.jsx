@@ -17,8 +17,10 @@ import Button from "@/components/ui/site/button/Button";
 import LanguageModal from "@/components/ui/site/language/LanguageModal";
 import axios from "axios";
 import { toast } from "react-hot-toast";
+import { useRouter } from "next/navigation";
 
-export default function page() {
+export default function Page() {
+  const router = useRouter();
   const [isLangOpen, setIsLangOpen] = useState(false);
   const [selectedLang, setSelectedLang] = useState("English");
   const [formData, setFormData] = useState({
@@ -26,24 +28,34 @@ export default function page() {
     email: "",
     password: "",
   });
-
   const [loading, setLoading] = useState(false);
 
   const handleRegister = async () => {
-    setLoading(true);
+    if (!formData.fullName || !formData.email || !formData.password) {
+      toast.error("All fields are required!");
+      return;
+    }
 
+    setLoading(true);
     try {
-      const response = await axios.post("/api/users/signup", formData);
+      const response = await axios.post("/api/auth/signup", formData);
       if (response.data.success) {
+        router.push("/auth/login");
         toast.success(response.data.message);
-        // router.push("/auth/login");
+        const subject = "Email Subject";
+        const email = response?.data?.user?.email;
+        const html = `Welcome to our site!`;
+        await axios.post("/api/sendMail", {
+          subject,
+          email,
+          html,
+        });
       }
     } catch (err) {
-      if (err.response && err.response.data && err.response.data.message) {
-        toast.error(err.response.data.message);
-      } else {
-        toast.error("Something went wrong. Please try again.");
-      }
+      const message =
+        err?.response?.data?.message ||
+        "Something went wrong. Please try again.";
+      toast.error(message);
     } finally {
       setLoading(false);
     }
@@ -52,8 +64,6 @@ export default function page() {
   return (
     <section>
       <Container>
-        {/* Toast container */}
-
         {/* Desktop Logo */}
         <div className="max-w-screen-xl mx-auto xl:px-10 py-10 hidden md:flex">
           <Link href={"/"}>
@@ -64,15 +74,13 @@ export default function page() {
         <div className="max-w-screen-xl mx-auto xl:px-10">
           {/* Mobile Language */}
           <div className="mt-6 justify-end items-end flex md:hidden">
-            <div className="relative">
-              <div
-                className="flex items-center gap-2 cursor-pointer"
-                onClick={() => setIsLangOpen(true)}
-              >
-                <World className="w-4 h-4 fill-[var(--font-color)]" />
-                <span className="!text-sm">{selectedLang}</span>
-                <Arrow className={"w-4 h-4"} />
-              </div>
+            <div
+              className="flex items-center gap-2 cursor-pointer"
+              onClick={() => setIsLangOpen(true)}
+            >
+              <World className="w-4 h-4 fill-[var(--font-color)]" />
+              <span className="!text-sm">{selectedLang}</span>
+              <Arrow className={"w-4 h-4"} />
             </div>
             <LanguageModal
               isOpen={isLangOpen}
@@ -118,7 +126,6 @@ export default function page() {
 
               <p className="text-center">Or register with your email</p>
 
-              {/* Full Name */}
               <Input
                 name="fullName"
                 value={formData.fullName}
@@ -130,8 +137,6 @@ export default function page() {
                 className="!py-4 !rounded !px-5"
                 icon={<User className="fill-gray-400 w-4 h-4" />}
               />
-
-              {/* Email */}
               <Input
                 name="email"
                 value={formData.email}
@@ -143,8 +148,6 @@ export default function page() {
                 className="!py-4 !rounded !px-5"
                 icon={<Email className="fill-gray-400 w-4 h-4" />}
               />
-
-              {/* Password */}
               <Input
                 name="password"
                 type="password"
@@ -158,9 +161,8 @@ export default function page() {
                 icon={<Lock className="fill-gray-400 w-4 h-4" />}
               />
 
-              {/* Register Button */}
               <Button
-                className={`!rounded ${loading ? "opacity-60" : ""}`}
+                className={`!rounded ${loading ? "opacity-60 pointer-events-none" : ""}`}
                 buttonName={loading ? "Creating..." : "Create Account"}
                 onClick={handleRegister}
                 disabled={loading}
@@ -189,15 +191,13 @@ export default function page() {
         {/* Footer */}
         <div className="flex-wrap items-center justify-center gap-6 lg:gap-8 max-w-screen-xl mx-auto xl:px-10 hidden md:flex">
           <div>
-            <div className="relative">
-              <div
-                className="flex items-center gap-2 cursor-pointer"
-                onClick={() => setIsLangOpen(true)}
-              >
-                <World className="w-6 h-6 fill-[var(--font-color)]" />
-                <span>{selectedLang}</span>
-                <Arrow className={"w-5 h-5"} />
-              </div>
+            <div
+              className="flex items-center gap-2 cursor-pointer"
+              onClick={() => setIsLangOpen(true)}
+            >
+              <World className="w-6 h-6 fill-[var(--font-color)]" />
+              <span>{selectedLang}</span>
+              <Arrow className={"w-5 h-5"} />
             </div>
             <LanguageModal
               isOpen={isLangOpen}

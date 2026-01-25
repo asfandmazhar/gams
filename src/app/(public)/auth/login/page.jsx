@@ -16,9 +16,11 @@ import {
 import Input from "@/components/ui/site/Input";
 import Button from "@/components/ui/site/button/Button";
 import LanguageModal from "@/components/ui/site/language/LanguageModal";
+import { useAuth } from "@/context/AuthContext";
 
 export default function LoginPage() {
   const router = useRouter();
+  const { setIsLoggedIn } = useAuth();
 
   const [isLangOpen, setIsLangOpen] = useState(false);
   const [selectedLang, setSelectedLang] = useState("English");
@@ -29,11 +31,6 @@ export default function LoginPage() {
   });
 
   const [loading, setLoading] = useState(false);
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -46,7 +43,7 @@ export default function LoginPage() {
     try {
       setLoading(true);
 
-      const res = await fetch("/api/users/login", {
+      const res = await fetch("/api/auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
@@ -60,6 +57,7 @@ export default function LoginPage() {
       }
 
       toast.success("Login successful!");
+      setIsLoggedIn(true);
       router.push("/");
     } catch (error) {
       toast.error("Unable to sign in. Please try again.");

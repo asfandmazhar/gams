@@ -63,7 +63,7 @@ export async function POST(request) {
 
     // Create new user
     const user = new User({
-      fullName: fullName,
+      fullName,
       email: email.toLowerCase(),
       username,
       password: hashedPassword,

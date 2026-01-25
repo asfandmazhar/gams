@@ -5,14 +5,18 @@ import Container from "@/components/site/layout/Container";
 import Button from "@/components/ui/site/button/Button";
 import BorderButton from "@/components/ui/site/button/BorderButton";
 import NameInput from "@/components/ui/site/Input";
+import { useAuth } from "@/context/AuthContext";
+import { ProfileImage } from "@/components/icons/icons";
 
 export default function Profile() {
+  const { user, setUser } = useAuth();
   const [isEditingName, setIsEditingName] = useState(false);
   const [isEditingPassword, setIsEditingPassword] = useState(false);
 
   const [formData, setFormData] = useState({
-    nickname: "Muhammad Hamza",
-    currentPassword: "",
+    fullName: user?.fullName,
+    email: user?.email,
+    username: user?.username,
     newPassword: "",
     confirmPassword: "",
   });
@@ -57,29 +61,22 @@ export default function Profile() {
           <div className="space-y-4">
             <div className="flex items-center gap-4 mb-4 md:mb-8">
               <div className="relative group cursor-pointer">
-                <img
-                  src="https://images.pexels.com/photos/1040880/pexels-photo-1040880.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&fit=crop"
-                  alt="Profile"
-                  className="w-16 md:w-20 h-16 md:h-20 rounded-full object-cover border-4 border-gray-200"
-                />
-                <div className="absolute inset-0 bg-black bg-opacity-40 rounded-full opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                  <span className="text-white text-xs font-medium">Edit</span>
-                </div>
+                <ProfileImage className="w-30 h-30 fill-[var(--navigation-font-color)] invert hover:opacity-75" />
               </div>
               <div className="flex-1 pt-2">
-                <p className="text-gray-600 text-sm">Click on image to edit</p>
+                <p className="text-gray-600 text-base">{formData?.fullName}</p>
               </div>
             </div>
 
             {/* Nickname Section */}
             <div className="custom-rounded p-6 shadow-lg">
-              <h4>Nickname</h4>
+              <h4>Username</h4>
 
               {isEditingName ? (
                 <div className="space-y-4 mt-4">
                   <div className="relative">
                     <NameInput
-                      value={formData.nickname}
+                      value={formData.username}
                       onChange={handleInputChange}
                       maxLength={30}
                       placeholder="nickname"
@@ -227,7 +224,9 @@ export default function Profile() {
                 </div>
               ) : (
                 <div className="flex items-center justify-between mt-2">
-                  <span className="!text-sm md:!text-base text-gray-600">Edit your password</span>
+                  <span className="!text-sm md:!text-base text-gray-600">
+                    Edit your password
+                  </span>
                   <button
                     onClick={() => setIsEditingPassword(true)}
                     className="text-[var(--navigation-color)] hover:text-[var(--hover-color)] underline cursor-pointer !text-sm md:!text-base"
@@ -243,13 +242,9 @@ export default function Profile() {
             {/* Email Section */}
             <div className="custom-rounded p-6 shadow-lg">
               <div className="space-y-4">
-                <h4>
-                  GamsGo Login E-mail
-                </h4>
+                <h4>GamsGo Login E-mail</h4>
                 <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-                  <p>
-                    mhamzamughal60@gmail.com
-                  </p>
+                  <p>mhamzamughal60@gmail.com</p>
                   <div className="flex gap-4">
                     <button className="text-[var(--navigation-color)] hover:[var(--hover-color)] underline cursor-pointer !text-sm md:!text-base">
                       Change records
@@ -264,9 +259,7 @@ export default function Profile() {
 
             {/* Email Notifications Section */}
             <div className="custom-rounded p-6 shadow-lg">
-              <h4 className="mb-6">
-                Email notification
-              </h4>
+              <h4 className="mb-6">Email notification</h4>
 
               <div className="space-y-8">
                 {/* Suspicious Login */}

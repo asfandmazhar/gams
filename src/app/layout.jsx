@@ -5,6 +5,7 @@ import ClientLayoutWrapper from "./ClientLayoutWrapper";
 import localFont from "next/font/local";
 import "./globals.css";
 import { Toaster } from "react-hot-toast";
+import { AuthProvider } from "@/context/AuthContext";
 
 const bricolage = localFont({
   src: [
@@ -63,12 +64,13 @@ export default function RootLayout({ children }) {
         }`}
       >
         <Toaster position="top-center" reverseOrder={false} />
-
-        {isAdminPage || isLoadingPage ? (
-          children
-        ) : (
-          <ClientLayoutWrapper>{children}</ClientLayoutWrapper>
-        )}
+        <AuthProvider>
+          {isAdminPage || isLoadingPage ? (
+            children
+          ) : (
+            <ClientLayoutWrapper>{children}</ClientLayoutWrapper>
+          )}
+        </AuthProvider>
       </body>
     </html>
   );

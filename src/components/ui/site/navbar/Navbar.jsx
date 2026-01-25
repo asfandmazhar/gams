@@ -12,6 +12,7 @@ import Profile from "./Profile";
 import Sidebar from "./Sidebar";
 import LanguageModal from "@/components/ui/site/language/LanguageModal";
 import NavButton from "../button/NavButton";
+import { useAuth } from "@/context/AuthContext";
 
 export default function Navbar() {
   const [isLangOpen, setIsLangOpen] = useState(false);
@@ -19,6 +20,8 @@ export default function Navbar() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const pathname = usePathname();
+  const { isLoggedIn, loading } = useAuth();
+  if (loading || isLoggedIn === null) return null;
 
   return (
     <nav className="w-full py-4 fixed top-0 left-0 z-40 bg-[var(--theme-color)]">
@@ -61,8 +64,11 @@ export default function Navbar() {
 
             {/* Profile + Login */}
             <div className="hidden md:flex items-center">
-              <Profile onLanguageClick={() => setIsLangOpen(true)} />
-              <NavButton href={"/auth/login"} buttonName="Log in / Sign up" />
+              {isLoggedIn ? (
+                <Profile onLanguageClick={() => setIsLangOpen(true)} />
+              ) : (
+                <NavButton href={"/auth/login"} buttonName="Log in / Sign up" />
+              )}
             </div>
 
             {/* Mobile Menu Button */}

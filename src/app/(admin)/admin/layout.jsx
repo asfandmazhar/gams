@@ -1,11 +1,13 @@
 "use client";
 
 import { useState } from "react";
-import { usePathname } from "next/navigation";
+import { usePathname, notFound } from "next/navigation";
 import "../../globals.css";
 import localFont from "next/font/local";
 import AdminNavbar from "@/components/admin/layout/AdminNavbar";
 import AdminSidebar from "@/components/admin/layout/AdminSidebar";
+import { useAuth } from "@/context/AuthContext";
+import { Loader } from "@/components/ui/Loader";
 
 // Admin Fonts
 const roboto = localFont({
@@ -30,22 +32,31 @@ const roboto = localFont({
 });
 
 export default function AdminLayout({ children }) {
+  const { user, loading } = useAuth();
   const [isOpen, setIsOpen] = useState(false);
   const pathname = usePathname();
-
-  const hideLayoutOn = [
-    "/admin/addProductData",
-  ];
-
+  const hideLayoutOn = ["/admin/addProductData"];
   const shouldHideLayout = hideLayoutOn.includes(pathname);
 
+  // ⏳ Wait for auth
+  if (loading) {
+    return <Loader />;
+  }
+
+  // ❌ Not admin → pretend route doesn't exist
+  if (!user || !user.isAdmin) {
+    notFound();
+  }
+
+  // ✅ Admin allowed, but hide layout on specific routes
   if (shouldHideLayout) {
-    return <div className={`${roboto.variable}`}>{children}</div>;
+    return <div className={roboto.variable}>{children}</div>;
   }
 
   return (
     <div className={`${roboto.variable} admin-layout min-h-screen flex`}>
       <AdminSidebar isOpen={isOpen} setIsOpen={setIsOpen} />
+
       <div className="flex-1 overflow-x-auto">
         <AdminNavbar setIsOpen={setIsOpen} />
         {children}

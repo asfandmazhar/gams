@@ -78,7 +78,7 @@ export default function Profile() {
 
     setLoading(true);
     try {
-      const res = await axios.put("/api/user/update-fullname", {
+      const res = await axios.put("/api/user/update/update-fullname", {
         fullName: formData.fullName,
       });
 
@@ -108,7 +108,7 @@ export default function Profile() {
 
     setLoading(true);
     try {
-      const res = await axios.put("/api/user/update-username", {
+      const res = await axios.put("/api/user/update/update-username", {
         username: formData.username,
       });
 
@@ -143,7 +143,7 @@ export default function Profile() {
 
     setLoading(true);
     try {
-      const res = await axios.put("/api/user/update-password", {
+      const res = await axios.put("/api/user/update/update-password", {
         password: formData.newPassword,
       });
 

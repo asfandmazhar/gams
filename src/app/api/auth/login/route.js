@@ -53,6 +53,7 @@ export async function POST(request) {
       fullName: user.fullName,
       email: user.email,
       username: user.username,
+      isAdmin: user.isAdmin,
     };
 
     // Sign JWT

@@ -16,8 +16,8 @@ export default function Navbar({ setIsOpen }) {
         <Container>
           <div className="flex justify-between items-center">
             <div className="hidden md:flex flex-col">
-              <span className="capitalize btn-shine ">Hi Admin!</span>
-              <h1 className="!text-3xl !text-[var(--navigation-font-color)] !font-[var(--font-roboto)] !leading-[35px]">
+              <span className="capitalize btn-shine">Hi Admin!</span>
+              <h1 className="!text-3xl capitalize !text-[var(--navigation-font-color)] !font-[var(--font-roboto)] !leading-[35px]">
                 welcome back
               </h1>
             </div>

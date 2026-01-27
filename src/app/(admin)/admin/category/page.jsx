@@ -2,7 +2,6 @@ import React from "react";
 import AnimationWrapper from "@/common/PageAnimation";
 import Container from "@/components/admin/layout/Container";
 import CategoryRow from "@/components/admin/dashboard-data/Category";
-import IconImage from "@/components/ui/admin/ImageVideo";
 
 export default function page() {
   return (
@@ -18,10 +17,10 @@ export default function page() {
               className="flex lg:flex-row flex-col items-center w-full gap-3"
             >
               <div className="w-96">
-                <IconImage
-                  fontSize={"text-base"}
-                  size={"SVG Icon import here"}
-                  className={"w-full py-4"}
+                <input
+                  type="file"
+                  accept=".svg"
+                  className="input-box bg-[var(--admin-bg-gray)] !rounded-xl  cursor-pointer"
                 />
               </div>
               <input
@@ -29,7 +28,9 @@ export default function page() {
                 className="input-box bg-[var(--admin-bg-gray)] !rounded-xl"
                 placeholder="Enter Category Name"
               />
-              <button className="glass-btn capitalize text-sm md:text-base xl:!pr-14 md:!py-4">Add Category</button>
+              <button className="glass-btn capitalize text-sm md:text-base xl:!pr-14 md:!py-4">
+                Add Category
+              </button>
             </form>
           </div>
           <hr className="border-b my-6" />

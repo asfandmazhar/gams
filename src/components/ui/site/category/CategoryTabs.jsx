@@ -49,7 +49,7 @@ export default function CategoryTabs() {
               <Icon
                 className={`w-6 lg:w-8 h-6 lg:h-8 ${
                   activeCategory === cat.slug
-                    ? "fill-[var(--navigation-font-color)]"
+                    ? "invert"
                     : "fill-[var(--navigation-color)]"
                 }`}
               />

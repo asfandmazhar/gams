@@ -23,11 +23,15 @@ export async function GET(request) {
       );
     }
 
-    const users = await User.find().select("-password").sort({ createdAt: -1 });
+    const totalUsers = await User.countDocuments({});
+    const totalAdmin = await User.countDocuments({ isAdmin: true });
+    const totalUser = await User.countDocuments({ isAdmin: false });
 
     return NextResponse.json({
       success: true,
-      users,
+      totalUsers,
+      totalAdmin,
+      totalUser,
     });
   } catch (error) {
     return NextResponse.json(

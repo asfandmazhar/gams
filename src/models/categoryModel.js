@@ -4,22 +4,26 @@ const categorySchema = new mongoose.Schema(
   {
     name: {
       type: String,
-      required: [true, "Please Provide Category Name"],
+      required: [true, "Please provide category name"],
     },
     slug: {
       type: String,
-      required: [true, "Please Provide Category Slug"],
+      required: [true, "Please provide category slug"],
       unique: true,
     },
     icon: {
       type: String,
-      required: [true, "Please Provide Category Icon"],
+      required: [true, "Please provide category icon"],
+    },
+    iconPublicId: {
+      type: String,
+      required: [true, "Please provide Cloudinary public_id"],
     },
   },
   { timestamps: true },
 );
 
 const Category =
-  mongoose.models.category || mongoose.model("categories", categorySchema);
+  mongoose.models.Category || mongoose.model("Category", categorySchema);
 
 export default Category;

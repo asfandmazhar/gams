@@ -3,6 +3,7 @@ import Category from "@/models/categoryModel";
 import { NextResponse } from "next/server";
 import { getUserFromToken } from "@/helpers/getUserFromToken";
 import cloudinary from "@/config/cloudinary";
+import slugify from "slugify";
 
 connectDB();
 
@@ -10,16 +11,9 @@ export async function POST(request) {
   try {
     const userData = getUserFromToken(request);
 
-    if (!userData) {
+    if (!userData || !userData.isAdmin) {
       return NextResponse.json(
         { success: false, message: "Unauthorized" },
-        { status: 401 },
-      );
-    }
-
-    if (!userData.isAdmin) {
-      return NextResponse.json(
-        { success: false, message: "Forbidden" },
         { status: 403 },
       );
     }
@@ -27,40 +21,42 @@ export async function POST(request) {
     const formData = await request.formData();
     const name = formData.get("name");
     const iconFile = formData.get("icon");
-    const slug = name.toLowerCase().replace(/\s+/g, "-");
 
     if (!name || !iconFile) {
       return NextResponse.json(
-        { success: false, message: "Name and Icon are required" },
+        { success: false, message: "Name or icon is missing" },
         { status: 400 },
       );
     }
 
-    if (name.length < 3) {
-      return NextResponse.json(
-        { success: false, message: "Invalid Category Name!" },
-        { status: 400 },
-      );
-    }
+    const bytes = await iconFile.arrayBuffer();
+    const buffer = Buffer.from(bytes);
 
-    if (iconFile.type !== "image/svg+xml") {
-      return NextResponse.json(
-        { success: false, message: "Only SVG files are allowed" },
-        { status: 400 },
-      );
-    }
-
-    const uploadResult = await cloudinary.uploader.upload(iconFile.stream(), {
-      folder: "categories",
-      resource_type: "image",
-      public_id: slug,
+    const uploadResult = await new Promise((resolve, reject) => {
+      cloudinary.uploader
+        .upload_stream(
+          {
+            folder: "categories",
+            resource_type: "image",
+          },
+          (error, result) => {
+            if (error) reject(error);
+            else resolve(result);
+          },
+        )
+        .end(buffer);
     });
 
-    const newCategory = await Category.create({
+    const slug = slugify(name, { lower: true, strict: true });
+
+    const newCategory = new Category({
       name,
-      slug: slug,
+      slug,
       icon: uploadResult.secure_url,
+      iconPublicId: uploadResult.public_id,
     });
+
+    await newCategory.save();
 
     return NextResponse.json({
       success: true,

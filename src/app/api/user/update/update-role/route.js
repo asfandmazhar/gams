@@ -24,8 +24,14 @@ export async function PUT(request) {
     }
 
     const { isAdmin, _id } = await request.json();
+    if (!_id) {
+      return NextResponse.json(
+        { success: false, message: "User ID is missing" },
+        { status: 400 },
+      );
+    }
 
-    const updatedUser = await User.findByIdAndUpdate(_id, { isAdmin });
+    await User.findByIdAndUpdate(_id, { isAdmin });
 
     return NextResponse.json({
       success: true,

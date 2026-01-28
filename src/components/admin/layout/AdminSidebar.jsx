@@ -24,7 +24,7 @@ export default function AdminSidebar({ isOpen, setIsOpen }) {
   return (
     <aside
       className={`
-        h-screen w-72 bg-[var(--admin-bg-color)] border-r z-50
+        w-72 bg-[var(--admin-bg-color)] border-r z-50
         transition-transform duration-300 ease-in-out
         fixed top-0 left-0 lg:static
         ${isOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"}

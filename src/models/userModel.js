@@ -4,21 +4,22 @@ const userSchema = new mongoose.Schema(
   {
     fullName: {
       type: String,
-      required: [true, "Please Provide Your Full Name"],
+      required: [true, "Please provide your full name"],
     },
     username: {
       type: String,
-      required: [true, "Please Provide Username"],
+      required: [true, "Please provide username"],
       unique: true,
     },
     email: {
       type: String,
-      required: [true, "Please Provide Email Address"],
+      required: [true, "Please provide email address"],
       unique: true,
+      lowercase: true,
     },
     password: {
       type: String,
-      required: [true, "Please Provide Password"],
+      required: [true, "Please provide password"],
     },
     isAdmin: {
       type: Boolean,
@@ -32,6 +33,6 @@ const userSchema = new mongoose.Schema(
   { timestamps: true },
 );
 
-const User = mongoose.models.users || mongoose.model("users", userSchema);
+const User = mongoose.models.User || mongoose.model("User", userSchema);
 
 export default User;

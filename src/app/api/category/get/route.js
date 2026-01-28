@@ -1,7 +1,7 @@
 import { connectDB } from "@/config/dbConfig";
 import { getUserFromToken } from "@/helpers/getUserFromToken";
-import User from "@/models/userModel";
 import { NextResponse } from "next/server";
+import Category from "@/models/categoryModel";
 
 connectDB();
 
@@ -18,16 +18,16 @@ export async function GET(request) {
 
     if (!userData.isAdmin) {
       return NextResponse.json(
-        { success: false, message: "Unauthorized" },
-        { status: 401 },
+        { success: false, message: "Forbidden" },
+        { status: 403 },
       );
     }
 
-    const users = await User.find().select("-password").sort({ createdAt: -1 });
+    const categories = await Category.find().sort({ createdAt: -1 });
 
     return NextResponse.json({
       success: true,
-      users,
+      categories,
     });
   } catch (error) {
     return NextResponse.json(

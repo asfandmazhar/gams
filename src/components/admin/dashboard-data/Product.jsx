@@ -5,13 +5,80 @@ import Link from "next/link";
 import DropdownMenu from "@/components/ui/admin/Dropdown";
 import { Plus, Cross, Filter, Arrow } from "@/components/icons/icons";
 import Button from "@/components/ui/admin/button/Button";
-import WebsiteRow from "@/components/ui/admin/table/WebsiteRow";
+import axios from "axios";
+import { toast } from "react-hot-toast";
+import Image from "next/image";
+
+const CategorySkeleton = () => (
+  <li className="h-6 rounded-full bg-white/10 animate-pulse" />
+);
+
+const TableRowSkeleton = () => (
+  <tr className="animate-pulse">
+    <td className="p-4">
+      <div className="h-4 w-6 bg-white/10 rounded" />
+    </td>
+    <td className="p-4">
+      <div className="h-4 w-40 bg-white/10 rounded" />
+    </td>
+    <td className="p-4">
+      <div className="h-4 w-20 bg-white/10 rounded" />
+    </td>
+    <td className="p-4">
+      <div className="h-4 w-16 bg-white/10 rounded" />
+    </td>
+    <td className="p-4">
+      <div className="h-4 w-28 bg-white/10 rounded" />
+    </td>
+    <td className="p-4">
+      <div className="h-4 w-28 bg-white/10 rounded" />
+    </td>
+    <td className="p-4">
+      <div className="h-4 w-16 bg-white/10 rounded" />
+    </td>
+  </tr>
+);
 
 export default function Product() {
   const [filter, setFilter] = useState(false);
   const [sort, setSort] = useState(false);
   const [selectSort, setSelectSort] = useState("papular");
   const menuRef = useRef();
+  const [Categories, setCategories] = useState();
+  const [Products, setProducts] = useState();
+  const [loadingCategory, setLoadingCategory] = useState(false);
+  const [loadingProducts, setLoadingProducts] = useState(false);
+
+  const getCategories = async () => {
+    setLoadingCategory(true);
+    try {
+      const res = await axios.get("/api/category/get");
+      if (res.data.success) setCategories(res.data.categories);
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Failed to load categories");
+    } finally {
+      setLoadingCategory(false);
+    }
+  };
+
+  const getProducts = async () => {
+    setLoadingProducts(true);
+    try {
+      const res = await axios.get("/api/product/get/get-all-product");
+      console.log(res?.data?.products);
+
+      if (res?.data?.success) setProducts(res?.data?.products);
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Failed to load Products");
+    } finally {
+      setLoadingProducts(false);
+    }
+  };
+
+  useEffect(() => {
+    getCategories();
+    getProducts();
+  }, []);
 
   const handleClickOutSide = (event) => {
     if (menuRef.current && !menuRef.current.contains(event.target)) {
@@ -55,7 +122,7 @@ export default function Product() {
         {/* Side Bar */}
         <div
           className={`
-            space-y-4 p-6 md:rounded-xl h-2/3 overflow-y-auto scrollbar-hide md:h-fit md:sticky md:top-24 md:mb-20 md:w-2/12 fixed w-full z-20 left-0 rounded-t-3xl duration-500 transition-all ease-in-out md:glass-effect bg-gray no-scroll bg-[var(--admin-bg-color)] 
+            space-y-4 p-6 md:rounded-xl h-2/3 overflow-y-auto scrollbar-hide md:h-fit md:sticky md:top-24 md:mb-20 md:w-2/12 fixed w-full z-20 left-0 rounded-t-3xl duration-500 transition-all ease-in-out md:glass-effect bg-gray no-scroll bg-[var(--admin-bg-color)]
             ${filter ? "bottom-0" : " md:w-0 md:hidden -bottom-full "}`}
         >
           <Button
@@ -74,46 +141,26 @@ export default function Product() {
               Categories
             </h4>
             <ul className="space-y-2 mt-2">
-              <li>
-                <Link
-                  href={"/"}
-                  className="link text-light/80 hover:text-light text-base after:bg-light"
-                >
-                  Music
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href={"/"}
-                  className="link text-light/80 hover:text-light text-base after:bg-light"
-                >
-                  Ai
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href={"/"}
-                  className="link text-light/80 hover:text-light text-base after:bg-light"
-                >
-                  Software
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href={"/"}
-                  className="link text-light/80 hover:text-light text-base after:bg-light"
-                >
-                  Reading
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href={"/"}
-                  className="link text-light/80 hover:text-light text-base after:bg-light"
-                >
-                  Learning
-                </Link>
-              </li>
+              {loadingCategory ? (
+                Array.from({ length: 5 }).map((_, i) => (
+                  <CategorySkeleton key={i} />
+                ))
+              ) : Categories?.length === 0 ? (
+                <li className="text-white/50 glass-effect p-2 text-center">
+                  Category Not Found!
+                </li>
+              ) : (
+                Categories?.map((cat) => (
+                  <li key={cat._id}>
+                    <Link
+                      href="/"
+                      className="link text-light/80 hover:text-light"
+                    >
+                      {cat.name}
+                    </Link>
+                  </li>
+                ))
+              )}
             </ul>
           </div>
         </div>
@@ -220,16 +267,13 @@ export default function Product() {
                     product
                   </th>
                   <th className="whitespace-nowrap p-4 uppercase text-left">
-                    monthly price
+                    Status
                   </th>
                   <th className="whitespace-nowrap p-4 uppercase text-left">
-                    buyer
+                    Is Active
                   </th>
                   <th className="whitespace-nowrap p-4 uppercase text-left">
-                    Subscription date
-                  </th>
-                  <th className="whitespace-nowrap p-4 uppercase text-left">
-                    Expiry date
+                    Created At
                   </th>
                   <th className="whitespace-nowrap p-4 uppercase text-left">
                     Operation
@@ -237,38 +281,96 @@ export default function Product() {
                 </tr>
               </thead>
               <tbody>
-                <WebsiteRow
-                  num={1}
-                  img={"/images/card/canva.jpg"}
-                  title={"Spotify Premium"}
-                  price={2.57}
-                  buyer={987654}
-                  subscriptionDate={"11 sep, 2025"}
-                  expiryDate={"11 sep, 2025"}
-                />
-                <WebsiteRow
-                  num={2}
-                  img={"/images/card/chatgpt.jpg"}
-                  title={"ChatGPT"}
-                  price={5.54}
-                  buyer={987654}
-                  subscriptionDate={"11 sep, 2025"}
-                  expiryDate={"11 sep, 2025"}
-                />
-                <WebsiteRow
-                  num={3}
-                  img={"/images/card/netflix.jpg"}
-                  title={"Netflix"}
-                  price={10.0}
-                  buyer={987654}
-                  subscriptionDate={"11 sep, 2025"}
-                  expiryDate={"11 sep, 2025"}
-                />
+                {loadingProducts ? (
+                  Array.from({ length: 6 }).map((_, i) => (
+                    <TableRowSkeleton key={i} />
+                  ))
+                ) : Products?.length <= 0 ? (
+                  <tr className="p-6 text-center opacity-60">
+                    <td colSpan="7" className="p-4">
+                      Product not found!
+                    </td>
+                  </tr>
+                ) : (
+                  Products?.map((product, i) => (
+                    <tr
+                      className="hover:bg-[var(--admin-bg-gray)]/60 even:bg-[var(--admin-bg-gray)]"
+                      key={product?._id}
+                    >
+                      <td className="p-4">{i + 1}</td>
+                      <td className="p-4">
+                        <Link
+                          href={"/"}
+                          className="flex gap-4 items-center min-w-[250px] md:min-w-[300px] lg:min-w-[400px]"
+                        >
+                          <div className="w-14 h-14 md:w-20 md:h-20">
+                            <img
+                              width={20}
+                              height={20}
+                              src={
+                                product?.basic_info?.thumbnail?.url != null
+                                  ? product?.basic_info?.thumbnail?.url
+                                  : "https://placehold.co/60x60?text=Draft"
+                              }
+                              alt={product?.basic_info?.thumbnail?.alt || ""}
+                              className="object-contain w-full"
+                            />
+                          </div>
+                          <h5 className="capitalize hover:underline truncate max-w-[200px] md:max-w-[250px]">
+                            {product?.basic_info?.name}
+                          </h5>
+                        </Link>
+                      </td>
+                      <td className="p-4">
+                        <select
+                          name=""
+                          id=""
+                          className="input-box glass-effect !w-32 !p-3 capitalize !rounded-md"
+                        >
+                          <option
+                            value={
+                              product?.status == "draft" ? "draft" : "publish"
+                            }
+                            className="text-white bg-black/80"
+                          >
+                            {product?.status == "draft" ? "draft" : "publish"}
+                          </option>
+                          <option
+                            value={
+                              product?.status != "draft" ? "draft" : "publish"
+                            }
+                            className="text-white bg-black/80"
+                          >
+                            {product?.status != "draft" ? "draft" : "publish"}
+                          </option>
+                        </select>
+                      </td>
+                      <td className="p-4 uppercase whitespace-nowrap">
+                        <button
+                          className={`relative inline-flex h-7 cursor-pointer w-14 items-center rounded-full transition-colors duration-300
+        ${product?.isActive ? "bg-green-500" : "bg-gray-300"}`}
+                        >
+                          <span
+                            className={`inline-block h-5 w-5 transform rounded-full bg-white transition-transform duration-300
+          ${product?.isActive ? "translate-x-7" : "translate-x-1"}`}
+                          />
+                        </button>
+                      </td>
+                      <td className="p-4 uppercase whitespace-nowrap">
+                        {new Date(product.createdAt).toLocaleDateString()}
+                      </td>
+                      <td className="p-4 whitespace-nowrap space-x-2">
+                        <button className="link">Edit</button>
+                        <button className="danger-link">Delete</button>
+                      </td>
+                    </tr>
+                  ))
+                )}
               </tbody>
             </table>
           </div>
           {/* load more */}
-          <div className="w-full flex justify-center items-center">
+          <div className="w-full  justify-center items-center hidden">
             <button className="glass-btn capitalize text-sm md:text-base !px-6 md:!px-10 md:!py-4">
               Load more
             </button>

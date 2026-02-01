@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import DropdownMenu from "@/components/ui/admin/Dropdown";
-import { Plus, Cross, Filter, Arrow } from "@/components/icons/icons";
+import { Plus, Cross, Filter, Arrow, Reload } from "@/components/icons/icons";
 import Button from "@/components/ui/admin/button/Button";
 import axios from "axios";
 import { toast } from "react-hot-toast";
@@ -38,7 +38,7 @@ const TableRowSkeleton = () => (
 export default function Product() {
   const [filter, setFilter] = useState(false);
   const [sort, setSort] = useState(false);
-  const [selectSort, setSelectSort] = useState("papular");
+  const [selectSort, setSelectSort] = useState("New");
   const menuRef = useRef();
   const [Categories, setCategories] = useState();
   const [Products, setProducts] = useState();
@@ -263,16 +263,7 @@ export default function Product() {
                 <button
                   className="nav-link pl-4 pr-12 flex items-center gap-3"
                   onClick={() => {
-                    setSelectSort("papular");
-                    setSort(false);
-                  }}
-                >
-                  Papular
-                </button>
-                <button
-                  className="nav-link pl-4 pr-8 flex items-center gap-3"
-                  onClick={() => {
-                    setSelectSort("new");
+                    setSelectSort("New");
                     setSort(false);
                   }}
                 >
@@ -281,38 +272,11 @@ export default function Product() {
                 <button
                   className="nav-link pl-4 pr-8 flex items-center gap-3"
                   onClick={() => {
-                    setSelectSort("new");
+                    setSelectSort("old");
                     setSort(false);
                   }}
                 >
-                  1 Month
-                </button>
-                <button
-                  className="nav-link pl-4 pr-8 flex items-center gap-3"
-                  onClick={() => {
-                    setSelectSort("new");
-                    setSort(false);
-                  }}
-                >
-                  3 Month
-                </button>
-                <button
-                  className="nav-link pl-4 pr-8 flex items-center gap-3"
-                  onClick={() => {
-                    setSelectSort("new");
-                    setSort(false);
-                  }}
-                >
-                  6 Month
-                </button>
-                <button
-                  className="nav-link pl-4 pr-8 flex items-center gap-3"
-                  onClick={() => {
-                    setSelectSort("new");
-                    setSort(false);
-                  }}
-                >
-                  12 Month
+                  Old
                 </button>
               </DropdownMenu>
             </div>
@@ -364,7 +328,7 @@ export default function Product() {
                       <td className="p-4">
                         <Link
                           href={"/"}
-                          className="flex gap-4 items-center min-w-[250px] md:min-w-[300px] lg:min-w-[400px]"
+                          className="flex gap-4 items-center min-w-[250px] md:min-w-[300px] lg:min-w-[400px] hover:underline"
                         >
                           <div className="w-14 h-14 md:w-20 md:h-20">
                             <img
@@ -376,10 +340,10 @@ export default function Product() {
                                   : "https://placehold.co/60x60?text=Draft"
                               }
                               alt={product?.basic_info?.thumbnail?.alt || ""}
-                              className="object-contain w-full"
+                              className="object-contain w-full rounded-md hover:scale-110 transition-all ease-in"
                             />
                           </div>
-                          <h5 className="capitalize hover:underline truncate max-w-[200px] md:max-w-[250px]">
+                          <h5 className="capitalize truncate max-w-[200px] md:max-w-[250px]">
                             {product?.basic_info?.name}
                           </h5>
                         </Link>
@@ -451,6 +415,14 @@ export default function Product() {
               Load more
             </button>
           </div>
+
+          {/* Reload */}
+          <button
+            onClick={getProducts}
+            className="glass-btn flex justify-center items-center w-fit !p-4 !fixed !right-5 !bottom-5"
+          >
+            <Reload className="w-8 h-8 invert" />
+          </button>
         </div>
       </div>
     </>

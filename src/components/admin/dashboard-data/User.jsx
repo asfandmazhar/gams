@@ -8,7 +8,7 @@ import { Reload } from "@/components/icons/icons";
 /* 🔹 Skeleton row (Category-style loading) */
 function TableSkeletonRow({ columns = 7 }) {
   return (
-    <tr className="even:bg-[var(--admin-bg-gray)]">
+    <tr className="">
       {Array.from({ length: columns }).map((_, i) => (
         <td key={i} className="p-4">
           <div className="h-4 w-full rounded-md bg-[var(--admin-bg-gray)]/70 animate-pulse" />

@@ -7,7 +7,6 @@ import { Plus, Cross, Filter, Arrow } from "@/components/icons/icons";
 import Button from "@/components/ui/admin/button/Button";
 import axios from "axios";
 import { toast } from "react-hot-toast";
-import Image from "next/image";
 
 const CategorySkeleton = () => (
   <li className="h-6 rounded-full bg-white/10 animate-pulse" />
@@ -32,9 +31,6 @@ const TableRowSkeleton = () => (
     </td>
     <td className="p-4">
       <div className="h-4 w-28 bg-white/10 rounded" />
-    </td>
-    <td className="p-4">
-      <div className="h-4 w-16 bg-white/10 rounded" />
     </td>
   </tr>
 );
@@ -72,6 +68,47 @@ export default function Product() {
       toast.error(error.response?.data?.message || "Failed to load Products");
     } finally {
       setLoadingProducts(false);
+    }
+  };
+
+  /* 🔹 Delete Product */
+  const handleDelete = async (id) => {
+    if (!confirm("Are you sure you want to delete this Product?")) return;
+
+    const toastId = toast.loading("Deleting Product...");
+    try {
+      const res = await axios.delete(`/api/product/delete/${id}`);
+      if (res.data.success) {
+        toast.success("Product deleted", { id: toastId });
+        getProducts();
+      }
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Delete failed", {
+        id: toastId,
+      });
+    }
+  };
+
+  /* 🔹 Update Status */
+  const updateStatus = async (_id, status) => {
+    const toastId = toast.loading("Updating Product Status...");
+    if (!_id || !status) {
+      return toast.error("Some data is missing!", { id: toastId });
+    }
+
+    try {
+      const res = await axios.put(`/api/product/update/update-status`, {
+        _id,
+        status,
+      });
+      if (res.data.success) {
+        toast.success("Product Status Updated", { id: toastId });
+        getProducts();
+      }
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Updating failed", {
+        id: toastId,
+      });
     }
   };
 
@@ -323,25 +360,26 @@ export default function Product() {
                       </td>
                       <td className="p-4">
                         <select
-                          name=""
-                          id=""
                           className="input-box glass-effect !w-32 !p-3 capitalize !rounded-md"
+                          onChange={(e) =>
+                            updateStatus(product._id, e.target.value)
+                          }
                         >
                           <option
                             value={
-                              product?.status == "draft" ? "draft" : "publish"
+                              product?.status == "draft" ? "draft" : "published"
                             }
                             className="text-white bg-black/80"
                           >
-                            {product?.status == "draft" ? "draft" : "publish"}
+                            {product?.status == "draft" ? "draft" : "published"}
                           </option>
                           <option
                             value={
-                              product?.status != "draft" ? "draft" : "publish"
+                              product?.status != "draft" ? "draft" : "published"
                             }
                             className="text-white bg-black/80"
                           >
-                            {product?.status != "draft" ? "draft" : "publish"}
+                            {product?.status != "draft" ? "draft" : "published"}
                           </option>
                         </select>
                       </td>
@@ -361,7 +399,12 @@ export default function Product() {
                       </td>
                       <td className="p-4 whitespace-nowrap space-x-2">
                         <button className="link">Edit</button>
-                        <button className="danger-link">Delete</button>
+                        <button
+                          className="danger-link"
+                          onClick={() => handleDelete(product._id)}
+                        >
+                          Delete
+                        </button>
                       </td>
                     </tr>
                   ))

@@ -112,6 +112,32 @@ export default function Product() {
     }
   };
 
+  /* 🔹 Update isActive */
+  const updateIsActive = async (_id, isActive) => {
+    const toastId = toast.loading("Updating Product...");
+    if (!_id) {
+      return toast.error("Some data is missing!", { id: toastId });
+    }
+
+    try {
+      const res = await axios.put(`/api/product/update/update-isactive`, {
+        _id,
+        isActive,
+      });
+      if (res.data.success) {
+        toast.success(
+          `Product ${isActive ? "Activated" : "Deactivated"} Successfully!`,
+          { id: toastId },
+        );
+        getProducts();
+      }
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Updating failed", {
+        id: toastId,
+      });
+    }
+  };
+
   useEffect(() => {
     getCategories();
     getProducts();
@@ -385,13 +411,20 @@ export default function Product() {
                       </td>
                       <td className="p-4 uppercase whitespace-nowrap">
                         <button
-                          className={`relative inline-flex h-7 cursor-pointer w-14 items-center rounded-full transition-colors duration-300
-        ${product?.isActive ? "bg-green-500" : "bg-gray-300"}`}
+                          className="cursor-pointer"
+                          onClick={() =>
+                            updateIsActive(product?._id, !product?.isActive)
+                          }
                         >
-                          <span
-                            className={`inline-block h-5 w-5 transform rounded-full bg-white transition-transform duration-300
+                          <div
+                            className={`relative inline-flex h-7 w-14 items-center rounded-full transition-colors duration-300
+        ${product?.isActive ? "bg-green-500" : "bg-gray-300"}`}
+                          >
+                            <span
+                              className={`inline-block h-5 w-5 transform rounded-full bg-white transition-transform duration-300
           ${product?.isActive ? "translate-x-7" : "translate-x-1"}`}
-                          />
+                            />
+                          </div>
                         </button>
                       </td>
                       <td className="p-4 uppercase whitespace-nowrap">

@@ -26,12 +26,11 @@ export async function GET(request) {
     const totalUsers = await User.countDocuments({});
     const totalAdmin = await User.countDocuments({ isAdmin: true });
     const totalUser = await User.countDocuments({ isAdmin: false });
+    const countUser = { totalUsers, totalAdmin, totalUser };
 
     return NextResponse.json({
       success: true,
-      totalUsers,
-      totalAdmin,
-      totalUser,
+      countUser,
     });
   } catch (error) {
     return NextResponse.json(

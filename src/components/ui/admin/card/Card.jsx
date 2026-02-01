@@ -9,14 +9,7 @@ const formatNumber = (num = 0) => {
   return num.toLocaleString();
 };
 
-export default function Card({
-  heading,
-  total = 0,
-  link,
-  icon: Icon,
-  totalAdmin = 0,
-  totalUser = 0,
-}) {
+export default function Card({ heading, total = 0, link, icon: Icon, detail }) {
   return (
     <Link href={link} className="glass-btn !rounded-xl py-8 group space-y-3">
       <div className="flex justify-between items-center">
@@ -33,13 +26,9 @@ export default function Card({
         {formatNumber(total)}
       </h2>
 
-      {totalAdmin > 0 || totalUser > 0 ? (
+      {detail ? (
         <span className="text-sm text-[var(--navigation-font-color)]/50">
-          {totalAdmin > 0 &&
-            `${totalAdmin.toLocaleString()} Admin${totalAdmin > 1 ? "s" : ""}`}
-          {totalAdmin > 0 && totalUser > 0 && " • "}
-          {totalUser > 0 &&
-            `${totalUser.toLocaleString()} User${totalUser > 1 ? "s" : ""}`}
+          {detail}
         </span>
       ) : (
         <span className="text-sm text-[var(--navigation-font-color)]/50">

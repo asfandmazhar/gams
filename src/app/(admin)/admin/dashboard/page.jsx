@@ -19,23 +19,37 @@ import {
 
 export default function Page() {
   const [loading, setLoading] = useState(true);
-  const [totalUsers, setTotalUsers] = useState(0);
-  const [totalAdmin, setTotalAdmin] = useState(0);
-  const [totalUser, setTotalUser] = useState(0);
+  const [countUsers, setCountUsers] = useState(0);
+  const [countProducts, setCountProducts] = useState(0);
 
   const getTotalUsers = async () => {
     try {
       setLoading(true);
-      const res = await axios.get("/api/user/get/total-users");
+      const res = await axios.get("/api/user/get/count-users");
 
       if (res?.data?.success) {
-        setTotalUsers(res.data.totalUsers);
-        setTotalAdmin(res.data.totalAdmin);
-        setTotalUser(res.data.totalUser);
+        setCountUsers(res?.data?.countUser);
       }
     } catch (error) {
       toast.error(
-        error.response?.data?.message || "Fetching users failed. Try again.",
+        error.response?.data?.message || "Counting users failed. Try again.",
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const getTotalProducts = async () => {
+    try {
+      setLoading(true);
+      const res = await axios.get("/api/product/get/count-product");
+
+      if (res?.data?.success) {
+        setCountProducts(res?.data?.countProducts);
+      }
+    } catch (error) {
+      toast.error(
+        error.response?.data?.message || "Counting Products failed. Try again.",
       );
     } finally {
       setLoading(false);
@@ -44,6 +58,7 @@ export default function Page() {
 
   const ReloadDashboard = () => {
     getTotalUsers();
+    getTotalProducts();
   };
 
   useEffect(() => {
@@ -73,9 +88,8 @@ export default function Page() {
 
                 <Card
                   heading="Users"
-                  total={totalUsers}
-                  totalAdmin={totalAdmin}
-                  totalUser={totalUser}
+                  total={countUsers?.totalUsers}
+                  detail={`${countUsers?.totalAdmin > 0 ? `${countUsers?.totalAdmin.toLocaleString()} Admin` : ""} ${countUsers?.totalUser > 0 ? `${countUsers?.totalUser.toLocaleString()} Users` : ""}`}
                   link="/admin/user"
                   icon={Users}
                 />
@@ -89,7 +103,8 @@ export default function Page() {
 
                 <Card
                   heading="Product"
-                  total={4231232}
+                  total={countProducts?.totalProducts}
+                  detail={`${countProducts?.totalActiveProducts > 0 ? `${countProducts?.totalActiveProducts.toLocaleString()} Active` : ""} ${countProducts?.totalDeactivateProducts > 0 ? `${countProducts?.totalDeactivateProducts.toLocaleString()} Deactivate` : ""} ${countProducts?.totalPublishProducts > 0 ? `${countProducts?.totalPublishProducts.toLocaleString()} Published` : ""} ${countProducts?.totalDraftProducts > 0 ? `${countProducts?.totalDraftProducts.toLocaleString()} Draft` : ""}`}
                   link="/admin/product"
                   icon={Browser}
                 />

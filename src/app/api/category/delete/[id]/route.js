@@ -22,7 +22,7 @@ export async function DELETE(request, { params }) {
         { status: 403 },
       );
 
-    const { id } = params;
+    const { id } = await params;
     const category = await Category.findById(id);
     if (!category)
       return NextResponse.json(

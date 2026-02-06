@@ -40,12 +40,8 @@ export default function ErrorPage({
                 {errorCode}
               </span>
             </div>
-            <h1 className="mb-4 error-title">
-              {title}
-            </h1>
-            <p className="mb-8 max-w-2xl mx-auto leading-relaxed">
-              {message}
-            </p>
+            <h1 className="mb-4 error-title">{title}</h1>
+            <p className="mb-8 max-w-2xl mx-auto leading-relaxed">{message}</p>
           </div>
 
           {/* Animated Error Illustration */}

@@ -21,7 +21,7 @@ export async function DELETE(request, { params }) {
         { status: 403 },
       );
 
-    const { id } = params;
+    const { id } = await params;
     const product = await Product.findById(id);
     if (!product)
       return NextResponse.json(

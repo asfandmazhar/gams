@@ -6,12 +6,12 @@ import Link from "next/link";
 import { Arrow, Tick } from "@/components/icons/icons";
 import Payment from "@/components/ui/site/payment/PaymentPopup";
 
-export default function categoryContentDetails({ details, brandColor, slug }) {
+export default function categoryContentDetails({ details, slug }) {
   const [showAll, setShowAll] = useState(false);
   const [isPaymentOpen, setIsPaymentOpen] = useState(false);
 
   return (
-    <div className={`mt-2 custom-rounded p-6 bordered ${brandColor}`}>
+    <div className={`mt-2 custom-rounded p-6 bordered `}>
       <ul className="space-y-2 text-sm">
         {(showAll ? details : details.slice(0, 3))?.map((point, index) => (
           <li key={index} className="flex items-center gap-2">

@@ -20,14 +20,6 @@ export default function HeroSection({ searchParams }) {
         </div>
         <CategoryTabs slug={slug} />
         <CategoryContent slug={slug} />
-        <div className="mb-16 md:mb-20">
-          <Button
-            buttonName={"View More"}
-            className={
-              "!bg-[var(--card-background-color)] !text-[var(--font-color)]"
-            }
-          />
-        </div>
       </Container>
     </section>
   );

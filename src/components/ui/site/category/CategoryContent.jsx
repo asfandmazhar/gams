@@ -7,11 +7,12 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { toast } from "react-hot-toast";
 import Image from "next/image";
+import { Arrow, Tick } from "@/components/icons/icons";
 
 export default function CategoryContent() {
   const searchParams = useSearchParams();
   const slug = searchParams.get("category")?.toLowerCase() || "all";
-
+  const [showAll, setShowAll] = useState(false);
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(false);
 
@@ -100,15 +101,56 @@ export default function CategoryContent() {
               </div>
             </Link>
             {product?.productPoints && product?.productPoints.length > 0 && (
-              <CategoryDetails
-                details={product?.productPoints}
-                slug={product?.basic_info?.slug}
-              />
+              <div className={`mt-2 custom-rounded p-6 bordered `}>
+                <ul className="space-y-2 text-sm">
+                  {(showAll
+                    ? product?.productPoints
+                    : product?.productPoints.slice(0, 3)
+                  )?.map((point, index) => (
+                    <li key={index} className="flex items-center gap-2">
+                      <div>
+                        <Tick className="w-4 h-4 fill-[var(--navigation-color)]" />
+                      </div>
+                      <span
+                        className={`text-[var(--font-color)]/80 text-sm ${
+                          showAll ? "" : "line-clamp-1"
+                        }`}
+                      >
+                        {point}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+
+                {product?.productPoints?.length > 3 && (
+                  <div
+                    className={`flex items-center justify-center gap-2 mt-4 cursor-pointer transition-transform duration-300 fill-[var(--navigation-color)] ${
+                      showAll ? "rotate-180" : ""
+                    }`}
+                    onClick={() => setShowAll(!showAll)}
+                  >
+                    <div>
+                      <Arrow className="w-6 h-6 opacity-40" />
+                      <Arrow className="w-6 h-6 -mt-4 " />
+                    </div>
+                  </div>
+                )}
+
+                <div className="my-4 border-bottom"></div>
+
+                <div className="text-center mt-2">
+                  <Link
+                    href={`/details/${product?.basic_info?.slug}`}
+                    className="text-[var(--navigation-color)] text-sm md:text-base btn-secondary"
+                  >
+                    View more details
+                  </Link>
+                </div>
+              </div>
             )}
           </div>
         ))
       ) : (
-        // No products found
         <p className="col-span-full text-center text-gray-500 bg-pink-200 font-bold capitalize rounded-4xl p-3 mt-10">
           No products found.
         </p>

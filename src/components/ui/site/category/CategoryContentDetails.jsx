@@ -4,7 +4,6 @@ import React, { useState } from "react";
 import Button from "@/components/ui/site/button/Button";
 import Link from "next/link";
 import { Arrow, Tick } from "@/components/icons/icons";
-import Payment from "@/components/ui/site/payment/PaymentPopup";
 
 export default function categoryContentDetails({ details, slug }) {
   const [showAll, setShowAll] = useState(false);
